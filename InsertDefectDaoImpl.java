@@ -46,11 +46,11 @@ public class InsertDefectDaoImpl implements InsertDefectDao {
 
 			session = sqlSessionFactory.openSession();
 	 
-			// 保存用户权限信息
+			
 			InsertDefectMapper mapper = session.getMapper(InsertDefectMapper.class);
 			dbInsertDefectList = mapper.list(insertDefect);
 
-			// postgresql版本太低，无法使用8.4版本增加序号，只能手动添加。
+	
 			Iterator<InsertDefect> iter = dbInsertDefectList.iterator();
 			int objectNo = 1;
 			if(iter!=null){

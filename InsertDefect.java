@@ -21,15 +21,14 @@ public class InsertDefect {
 	private String objectNo;
 	private String lot;//LOT
 	private String head_id;
-  //  private String create_date; //生产日期
-  //  private String update_date;
+ 
 	private String lot_seq_sn;
-    private String  model_type; //机种
-    private double defect_qty;  //不良数量
-    private String defect_qty_str;  //不良数量
+        private String  model_type; //机种
+        private double defect_qty;  //不良数量
+        private String defect_qty_str;  //不良数量
 	private double put_qty;//投入数
 	private String put_qty_str;//投入数
-    private String defect_rate;//不良率
+        private String defect_rate;//不良率
 	private String defect_item;//不良项目
 	private String defect_column;//不良列别
 	private String defect_nz_no;//不良NZ NO#

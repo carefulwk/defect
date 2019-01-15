@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.esl.teas.mapper.InsertDefectMapper">
+	<resultMap id="InsertDefect" type="com.esl.teas.entity.InsertDefect">
+		<result column="lot" property="lot" />
+		<result column="head_id" property="head_id" />
+		<result column="create_date" property="create_date" />
+		<result column="update_date" property="update_date" />
+		<result column="serial" property="serial" />
+		<result column="lot_seq_sn" property="lot_seq_sn" />
+		<result column="model_type" property="model_type" />
+		<result column="defect_qty" property="defect_qty" />
+		<result column="put_qty" property="put_qty" />
+		<result column="defect_rate" property="defect_rate" />
+		<result column="defect_item" property="defect_item" />
+		<result column="defect_column" property="defect_column" />
+		<result column="defect_nz_no" property="defect_nz_no" />
+		<result column="defect_adressbit" property="defect_adressbit" />
+		<result column="np" property="np" />
+		<result column="si_cav" property="si_cav" />
+		<result column="sheet" property="sheet" />
+		<result column="defect_cav" property="defect_cav" />
+		<result column="resolve_result" property="resolve_result" />
+		<result column="material_report" property="material_report" />
+		<result column="regrow_judge" property="regrow_judge" />
+		<result column="laser_cut" property="laser_cut" />
+		<result column="resolve_date" property="resolve_date" />
+		<result column="resolve_result_qty" property="resolve_result_qty" />
+		
+		<result column="remark" property="remark" />
+		<result column="picture" property="picture" />
+		<result column="creat_dt" property="creat_dt" />
+		<result column="last_maint_dt" property="last_maint_dt" />
+		<result column="save_user" property="save_user" />
+		<result column="update_user" property="update_user" />
+		<result column="create_date" property="create_date" />
+		<result column="update_date" property="update_date" />
+		 
+	 	</resultMap>
+ 
+    <select id="list" resultMap="InsertDefect" parameterType="com.esl.teas.entity.InsertDefect">
+     
+select a.lotd_lot as lot, b.iqty as put_qty, split_part(a.lotd_lot,'-',1)||substring(a.lotd_remark,1,3)  as head_id,
+CONCAT(a.lotd_lot,a.lotd_seq_no,b.sn )  as lot_seq_sn,a.lotd_model as model_type,b.creat_dt,b.last_maint_dt,
+ (
+b.dr0_qty 
++b.dr1_qty 
++b.dr2_qty 
++b.dr3_qty 
++b.dr4_qty 
++b.dr5_qty 
++b.dr6_qty 
++b.dr7_qty 
++b.dr8_qty 
++b.dr9_qty 
++b.dr10_qty
++b.dr11_qty
++b.dr12_qty
++b.dr13_qty
++b.dr14_qty
++b.dr15_qty
++b.dr16_qty
++b.dr17_qty
++b.dr18_qty
++b.dr19_qty
++b.dr20_qty
++b.dr21_qty
++b.dr22_qty
++b.dr23_qty
++b.dr24_qty
++b.dr25_qty
++b.dr26_qty
++b.dr27_qty
++b.dr28_qty
++b.dr29_qty
++b.dr30_qty
+) as defect_qty
+ from thpwp_lot_defect a
+
+
+<if test="serial == 'MACH'">
+
+join thpwp_h308_input b on a.lotd_lot=b.lot
+ 
+ </if>
+ <if test="serial == 'TFP'">
+
+join thpwp_h020_input b on a.lotd_lot=b.lot
+ 
+ </if>
+ 
+
+ join teas_model c  on a.lotd_model=c.model_code
+ where 1 = 1 
+<if test="departmentId != null and departmentId != ''">
+			AND c.department_id = #{departmentId}
+		</if>
+	  	
+		<if test="modelSerial != null and modelSerial != ''">
+			AND c.model_serial like '%'||#{modelSerial}||'%'
+		</if>
+		<if test="modelCode != null and modelCode != ''">
+			AND a.lotd_model like '%'||#{modelCode}||'%'
+		</if>
+		<if test="lot != null and lot != ''">
+			AND a.lotd_lot like '%'||#{lot}||'%'
+		</if>
+		<if test="start_date != null and start_date != ''">
+			AND b.creat_dt &gt;= to_number(#{start_date},'999999')
+		</if>
+			<if test="end_date != null and end_date != ''">
+		   	AND b.creat_dt  &lt;= to_number(#{end_date},'999999')
+		  </if>
+   </select>
+   
+   
+    <select id="select_data" resultMap="InsertDefect" parameterType="String">
+      select * from 
+     teas_defect_result a   where lot_seq_sn = #{0}
+ 	 
+   </select>
+   <insert id="save_defect" parameterType="com.esl.teas.entity.InsertDefect">
+   
+
+		insert  into
+		teas_defect_result (lot_id,head_id,defect_qty,defect_item,defect_column,defect_nz_no,
+		defect_adressbit,defect_np,si_cav,sheet,defect_cav,resolve_result,resolve_result_qty,
+		material_report,regrow_judge,laser_cut,resolve_date,remark,model_type,defect_actunit,lot_seq_sn,
+		creat_dt,last_maint_dt,save_user,create_date,serial,put_qty)
+    values(#{lot},#{head_id},#{defect_qty},#{defect_item},#{defect_column},#{defect_nz_no},#{defect_adressbit},
+    #{defect_np},#{si_cav},#{sheet},#{defect_cav}, #{resolve_result},#{resolve_result_qty},
+    #{material_report},#{regrow_judge},#{laser_cut},#{resolve_date},#{remark},#{model_type},#{defect_actunit},#{lot_seq_sn}
+    ,#{creat_dt},#{last_maint_dt},#{save_user},#{create_date},#{serial},#{put_qty})
+
+    
+	</insert>
+	
+	<update id="update_defect" parameterType="com.esl.teas.entity.InsertDefect">
+	 update teas_defect_result set lot_id=#{lot}, head_id=#{head_id}, defect_qty=#{defect_qty}, defect_item=#{defect_item}, defect_column=#{defect_column},
+    defect_nz_no=#{defect_nz_no}, defect_adressbit=#{defect_adressbit},
+    defect_np=#{defect_np}, si_cav=#{si_cav}, sheet=#{sheet}, defect_cav=#{defect_cav}, resolve_result=#{resolve_result}, resolve_result_qty=#{resolve_result_qty}, 
+    material_report=#{material_report}, regrow_judge=#{regrow_judge},
+     laser_cut=#{laser_cut}, resolve_date=#{resolve_date}, remark=#{remark}, model_type=#{model_type}, defect_actunit=#{defect_actunit}, lot_seq_sn=#{lot_seq_sn}
+     ,update_user=#{update_user}, update_date=#{update_date}
+     where  lot_seq_sn=#{lot_seq_sn}
+	</update>
+	 
+</mapper>

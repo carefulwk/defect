@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.esl.teas.mapper.ResolveResultTypeMapper">
+	<resultMap id="ResolveResultType" type="com.esl.teas.entity.ResolveResultType">
+		<result column="resolve_id" property="resolve_id" />
+		<result column="resolve_name" property="resolve_name" />
+		<result column="date" property="date" />
+		<result column="main_title_id" property="main_title_id" />
+		<result column="one_type_id" property="one_type_id" />
+		<result column="two_type_id" property="two_type_id" />
+		<result column="three_type_id" property="three_type_id" />
+		<result column="main_title_name" property="main_title_name" />
+		<result column="one_type_name" property="one_type_name" />
+		<result column="two_type_name" property="two_type_name" />
+		<result column="three_type_name" property="three_type_name" />
+		<result column="add_title_id" property="add_title_id" />
+		<result column="one_add_id" property="one_add_id" />
+		<result column="two_add_id" property="two_add_id" />
+		<result column="text_tile_id" property="text_tile_id" />
+		<result column="text_tile_name" property="text_tile_name" />
+		<result column="text_one_id" property="text_one_id" />
+		<result column="text_one_name" property="text_one_name" />
+		<result column="text_two_id" property="text_two_id" />
+		<result column="text_two_name" property="text_two_name" />
+		<result column="text_three_id" property="text_three_id" />
+		<result column="text_three_name" property="text_three_name" />
+		
+		<result column="create_user" property="create_user" />
+		<result column="update_user" property="update_user" />
+	 </resultMap>
+
+
+	<select id="list" resultMap="ResolveResultType" parameterType="com.esl.teas.entity.ResolveResultType">
+		select   a.grade,a.resolve_id,a.resolve_name,parent_id,
+		 b.user_name as create_user,c.user_name as update_user,a.create_time,a.update_time  
+		from
+		teas_resolve_result_type a left join 
+		teas_priviledge b  on a.create_user=b.user_id
+		left join 
+		teas_priviledge c  on a.update_user=c.user_id
+		  where parent_id is not null 
+		<if test="main_title_id != null and main_title_id != ''">
+			and (resolve_id like '%'||#{main_title_id}||'%'  or    parent_id  like '%'||#{main_title_id}||'%'  or
+		           parent_id in( select resolve_id from teas_resolve_result_type where  parent_id   like '%'||#{main_title_id}||'%')  or parent_id in(
+                 select resolve_id from teas_resolve_result_type where parent_id in( select resolve_id from teas_resolve_result_type
+                where  parent_id   like '%'||#{main_title_id}||'%')))
+		
+		</if>
+	 
+		<if test="one_type_id != null and one_type_id != ''">
+		   and (resolve_id  like '%'||#{one_type_id}||'%' or parent_id  like '%'||#{one_type_id}||'%'  or
+		    parent_id in( select resolve_id from teas_resolve_result_type where  parent_id   like '%'||#{one_type_id}||'%')   
+		)
+		</if>
+		<if test="two_type_id != null and two_type_id != ''">
+			 and (resolve_id  like '%'||#{two_type_id}||'%' or parent_id  like '%'||#{two_type_id}||'%' )   
+		 
+		</if>
+		<if test="three_type_id != null and three_type_id != ''">
+		 
+			  and resolve_id  like '%'||#{three_type_id}||'%'
+		</if>
+		<if test="create_time != null and create_time != ''">
+			AND a.create_time like '%'||#{create_time}||'%'
+		</if>
+		
+	  </select>
+	  
+	  
+	  <select id="list_re_result" resultMap="ResolveResultType" parameterType="com.esl.teas.entity.ResolveResultType">
+		select    resolve_id,resolve_name
+		from
+		teas_resolve_result_type  where grade='0'
+		
+	  </select>
+	  
+	   <select id="list_child_type" resultMap="ResolveResultType" parameterType="com.esl.teas.entity.ResolveResultType">
+		 
+		select resolve_id,resolve_name  
+		from
+		teas_resolve_result_type  a  
+			  where 1 = 1
+		<if test="resolve_id != null and resolve_id != ''">
+			AND  a.parent_id like '%'||#{resolve_id}||'%'
+		</if>
+	   </select>
+	  
+	  <select id="getParentInfo" resultMap="ResolveResultType" parameterType="String">
+		 
+		select resolve_id,resolve_name,parent_id 
+		from
+		teas_resolve_result_type  a  
+		 where   a.resolve_id = #{parent_id}
+		 
+	   </select>
+
+	<insert id="insert" parameterType="com.esl.teas.entity.ResolveResultType">
+	
+		insert into teas_resolve_result_type(create_user,create_time,resolve_id,resolve_name,grade,parent_id)  values( #{create_user}, #{create_time},
+		   <if test="text_three_id != null and text_three_id != ''">
+		  #{text_three_id}, #{text_three_name},'3',#{two_add_id})
+		  </if>
+		<if test="text_two_id != null and text_two_id != ''">
+		  #{text_two_id}, #{text_two_name},'2',#{one_add_id})
+		  </if>
+		<if test="text_one_id != null and text_one_id != ''">
+		  #{text_one_id}, #{text_one_name},'1',#{add_title_id})
+		  </if>
+		  
+		  	<if test="text_tile_id != null and text_tile_id != ''">
+		  #{text_tile_id}, #{text_tile_name},'0','')
+		  </if>
+		 
+	</insert>
+
+		<insert id="update" parameterType="com.esl.teas.entity.ResolveResultType">
+	
+		update teas_resolve_result_type  set  update_user=#{update_user},update_time=#{update_time},
+		 resolve_name=#{resolve_name}  where resolve_id=#{resolve_id}
+		  
+		   
+		 
+	</insert>
+
+	<delete id="delete" parameterType="com.esl.teas.entity.ResolveResultType">
+		delete from teas_resolve_result_type
+		  where
+	    resolve_id=#{resolve_id}   
+		     
+		   
+	</delete>
+</mapper>

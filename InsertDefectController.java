@@ -141,7 +141,7 @@ public class InsertDefectController {
 			return new ModelAndView(TEASCommon.STR_VIEW_TEAS_INSERT_DEFECT);
 		}
 		
-		// 此处进行数据库操作
+		
 		int result = 1;
        String lots=insertDefectForm.getLot();
        if(lots==null||lots.equals("")){

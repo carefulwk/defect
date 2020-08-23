@@ -1,2 +1,0 @@
-# defect
-Abnormal data management
